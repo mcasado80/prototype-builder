@@ -89,4 +89,12 @@
 
 - **Branch:** `prototype/focus-tracker`
 - **Iterations:** 3
-- **Vercel preview URL:** *(updated after push)*
+- **Vercel preview URL:** https://prototype-builder-lj66k4en6-mcasado80s-projects.vercel.app
+- **Composite score (final):** 8.55
+- **Halt:** Smoke test override — iteration 3 complete, score above 7.5 threshold.
+
+### What I'd do next
+
+- Add optional session history beyond today.
+- Sound/notification when timer completes.
+- Dark mode toggle (currently forced light per spec).
