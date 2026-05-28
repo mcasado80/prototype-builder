@@ -1,26 +1,62 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f2ea;
+  --foreground: #2f2419;
+  --journal-ink: #2f2419;
+  --journal-muted: #7a6656;
+  --journal-faded: #b9a894;
+  --journal-card: #fffaf3;
+  --journal-surface: #f3ebe0;
+  --journal-border: #e6d8c8;
+  --journal-accent: #c45c3e;
+  --journal-accent-soft: #f6ddd4;
+  --mood-0: #fecaca;
+  --mood-1: #fed7aa;
+  --mood-2: #fef08a;
+  --mood-3: #bbf7d0;
+  --mood-4: #bfdbfe;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(circle at top, #fff7ec 0%, transparent 55%),
+    var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.journal-shell {
+  background: transparent;
+}
+
+.journal-title {
+  font-family: var(--font-fraunces), Georgia, serif;
+}
+
+.journal-card {
+  background: var(--journal-card);
+  border: 1px solid var(--journal-border);
+}
+
+.journal-sheet {
+  animation: sheet-rise 220ms ease-out;
+}
+
+@keyframes sheet-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
