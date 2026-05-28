@@ -32,12 +32,19 @@ Preview deploys are not automatic until you link the repo:
 
 If a prototype needs API keys or third-party credentials, add them in the Vercel project **Environment Variables** settings and in the Cursor Background Agent secrets store. Never commit secrets to the repo.
 
+## The `docs/` folder
+
+Put specs, mockups, PDFs, CSVs, and other reference files in [`docs/`](./docs/) before a run. Everything in that folder is **gitignored** — it stays on your machine and is never pushed.
+
+Cloud agents clone from GitHub and cannot see those files. **Attach them in the first message** when you start the agent (e.g. `@docs/brief.pdf`). More detail in [docs/README.md](./docs/README.md).
+
 ## Run a Background Agent prototype
 
 1. Open this repo in Cursor and start a **Background Agent** on `main`.
-2. In the first message, paste your spec (and attach reference docs if you have them).
-3. The agent creates a branch `prototype/<slug>` from `main` and iterates there. **Do not commit prototype work to `main`.**
-4. When the run finishes, the agent opens a PR titled `Prototype: <slug>` with `REPORT.md` as the description. The Vercel preview URL appears on that PR.
+2. Add reference files to `docs/` if you have them, then **attach them in the first message** (required for cloud runs).
+3. Paste your spec in that same first message.
+4. The agent creates a branch `prototype/<slug>` from `main` and iterates there. **Do not commit prototype work to `main`.**
+5. When the run finishes, you get a **live Vercel preview URL** for that branch. `REPORT.md` on the branch summarizes iterations and includes the URL. No PR is opened — the deployment is the deliverable.
 
 ## Branch conventions
 

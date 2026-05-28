@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# operator reference materials (local only — see docs/README.md)
+/docs/*
+!/docs/README.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
