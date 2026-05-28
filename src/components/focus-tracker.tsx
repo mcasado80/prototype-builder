@@ -139,12 +139,33 @@ export function FocusTracker() {
     setFocusText("");
   };
 
-  const dismissModal = () => {
+  const dismissModal = useCallback(() => {
     setShowLogModal(false);
     setFocusText("");
     setRemainingSeconds(preset * 60);
     setStatus("idle");
-  };
+  }, [preset]);
+
+  useEffect(() => {
+    if (!showLogModal) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        dismissModal();
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showLogModal, dismissModal]);
 
   const handleLogSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -165,8 +186,18 @@ export function FocusTracker() {
 
   const todaySessions = getTodaySessions(sessions);
   const streak = calculateStreak(sessions);
+  const totalMinutesToday = todaySessions.reduce(
+    (sum, session) => sum + session.durationMinutes,
+    0,
+  );
   const timerRunning = status === "running";
   const canChangePreset = status === "idle" || status === "paused";
+  const totalSeconds = preset * 60;
+  const progress =
+    totalSeconds > 0
+      ? Math.min(1, Math.max(0, (totalSeconds - remainingSeconds) / totalSeconds))
+      : 0;
+  const progressDegrees = progress * 360;
 
   if (!ready) {
     return (
@@ -218,13 +249,27 @@ export function FocusTracker() {
             </div>
           </div>
 
-          <p
-            className="mb-2 text-center font-mono text-7xl font-semibold tabular-nums tracking-tight text-zinc-900 sm:text-8xl"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {formatDuration(remainingSeconds)}
-          </p>
+          <div className="relative mx-auto mb-2 flex h-56 w-56 items-center justify-center">
+            <div
+              className="absolute inset-0 rounded-full transition-[background] duration-1000"
+              style={{
+                background: `conic-gradient(#059669 ${progressDegrees}deg, #e4e4e7 ${progressDegrees}deg)`,
+              }}
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={totalSeconds}
+              aria-valuenow={totalSeconds - remainingSeconds}
+              aria-label="Session progress"
+            />
+            <div className="absolute inset-2 rounded-full bg-white" aria-hidden="true" />
+            <p
+              className="relative text-center font-mono text-6xl font-semibold tabular-nums tracking-tight text-zinc-900"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {formatDuration(remainingSeconds)}
+            </p>
+          </div>
           <p className="mb-6 text-center text-sm text-zinc-500">
             {timerRunning
               ? "Stay with it — you're in focus mode"
@@ -279,10 +324,17 @@ export function FocusTracker() {
         <section className="space-y-4" aria-label="Today's sessions">
           <div className="flex items-baseline justify-between">
             <h2 className="text-lg font-semibold text-zinc-900">Today</h2>
-            <span className="text-sm text-zinc-500">
-              {todaySessions.length}{" "}
-              {todaySessions.length === 1 ? "session" : "sessions"}
-            </span>
+            <div className="text-right text-sm text-zinc-500">
+              <p>
+                {todaySessions.length}{" "}
+                {todaySessions.length === 1 ? "session" : "sessions"}
+              </p>
+              {totalMinutesToday > 0 ? (
+                <p className="font-medium text-emerald-700">
+                  {totalMinutesToday} min focused
+                </p>
+              ) : null}
+            </div>
           </div>
 
           {todaySessions.length === 0 ? (
@@ -311,6 +363,10 @@ export function FocusTracker() {
             </ul>
           )}
         </section>
+
+        <footer className="pb-4 text-center text-xs text-zinc-500">
+          Tip: log every completed session to keep your streak alive.
+        </footer>
       </div>
 
       {showLogModal ? (
@@ -319,8 +375,12 @@ export function FocusTracker() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="log-modal-title"
+          onClick={dismissModal}
         >
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+          <div
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+            onClick={(event) => event.stopPropagation()}
+          >
             <h2
               id="log-modal-title"
               className="text-xl font-semibold text-zinc-900"
@@ -355,7 +415,7 @@ export function FocusTracker() {
                   onClick={dismissModal}
                   className="rounded-xl border border-zinc-200 px-4 py-3 text-sm font-semibold text-zinc-700 hover:bg-zinc-50"
                 >
-                  Skip
+                  Skip (no streak)
                 </button>
               </div>
             </form>
