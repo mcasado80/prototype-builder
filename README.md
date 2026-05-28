@@ -30,7 +30,7 @@ Preview deploys are not automatic until you link the repo:
 2. Accept the defaults (Next.js, root directory `.`, build command `npm run build`).
 3. Deploy. Every push to any branch will get a preview URL; `main` gets production if you enable it.
 
-If a prototype needs API keys or third-party credentials, add them in the Vercel project **Environment Variables** settings and in the Cursor Background Agent secrets store. Never commit secrets to the repo.
+If a prototype needs API keys or third-party credentials, see [`.env.example`](./.env.example) for setup. Add values in the Vercel project **Environment Variables** settings, in a local `.env.local` for `npm run dev`, and in the Cursor Background Agent secrets store. Never commit secrets to the repo.
 
 ## The `docs/` folder
 
@@ -39,6 +39,8 @@ Put specs, mockups, PDFs, CSVs, and other reference files in [`docs/`](./docs/) 
 Cloud agents clone from GitHub and cannot see those files. **Attach them in the first message** when you start the agent (e.g. `@docs/brief.pdf`). More detail in [docs/README.md](./docs/README.md).
 
 ## Run a Background Agent prototype
+
+Need a starting spec? Copy one from [EXAMPLES.md](./EXAMPLES.md) (Focus Tracker, Mood Journal).
 
 1. Open this repo in Cursor and start a **Background Agent** on `main`.
 2. Add reference files to `docs/` if you have them, then **attach them in the first message** (required for cloud runs).
